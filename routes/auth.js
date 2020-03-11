@@ -13,7 +13,7 @@ const Joi = require('@hapi/joi');
 
 //Importing mongoose USER model
 const User = require('../models/User');
-const BlackList = require('../models/BlacklistToken');
+const Blacklist = require('../models/BlacklistToken');
 
 let blacklisted = [];
 
@@ -110,17 +110,25 @@ function authenticateToken(req, res, next){
   if(token==null)
    return res.sendStatus(401);
 
-   blacklisted.forEach(function(expiredToken){
-     if(token===expiredToken)
-      res.status(400).send("This token has expired because the user of this token logged out. Login again to create a new token.");
+   // blacklisted.forEach(function(expiredToken){
+   //   if(token===expiredToken)
+   //    res.status(400).send("This token has expired because the user of this token logged out. Login again to create a new token.");
+   // });
+
+   Blacklist.findOne({token:token}, function(err, found){
+      if(found)
+     return res.json('Token blacklisted. Cannot use this token.');
+     else{
+       jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+         if(err)
+         return res.sendStatus(403);
+         req.user = user;
+         next();
+       });
+     }
    });
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if(err)
-    return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
+
 }
 
 //MIDDLEWARE TO BLACKLIST TOKEN ON LOGOUT.
@@ -132,6 +140,12 @@ function blacklistToken(req, res, next){
    return res.sendStatus(401);
    console.log(token);
    blacklisted.push(token);
+
+   const newtoken = new Blacklist({
+     token:token
+   });
+   newtoken.save();
+
    next();
 }
 
