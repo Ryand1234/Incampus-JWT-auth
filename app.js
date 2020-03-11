@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const passportAuth = require('./routes/passport-auth-routes');
 const passportSetup = require('./config/passport-setup');
 const keys = require('./config/keys');
+var path = require('path');
 // Getting data in json format
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -19,25 +20,30 @@ app.use(bodyParser.json());
 // const swaggerUi = require('swagger-ui-express'),
 // swaggerDocument = require('./swagger.json');
 // app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-// const swaggerJSDoc = require('swagger-jsdoc');
-// const swaggerDefinition = {
-//   info: {
-//     title: 'Incampus API',
-//     version: '1.0.0',
-//     description: 'Documentation for Incampus Backend API',
-//   },
-//   host: 'localhost:4500',
-//   basePath: '/',
-// };
-// const options = {
-//   swaggerDefinition,
-//   apis: [path.resolve(__dirname, 'server.js')],
-// };
-// const swaggerSpec = swaggerJSDoc(options);
-// app.get('/swagger.json', (req, res) => {
-//   res.setHeader('Content-Type', 'application/json');
-//   res.send(swaggerSpec);
-// });
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerDefinition = {
+  info: {
+    title: 'Incampus API',
+    version: '1.0.0',
+    description: 'Documentation for Incampus Backend API',
+  },
+  host: 'localhost:4500',
+  basePath: '/',
+};
+const options = {
+  swaggerDefinition,
+  // apis: [path.resolve(__dirname, 'app.js')],
+  apis : ['./routes/auth.js','./routes/passport-auth-routes.js']
+};
+const swaggerSpec = swaggerJSDoc(options);
+app.get('/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
+
+app.get('/docs', (req, res) => {
+  res.sendFile(path.join(__dirname, 'redoc.html'));
+});
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -56,7 +62,10 @@ mongoose.connect(keys.mongodb.dbURI, () => {
 const authRoute = require('./routes/auth.js');
 
 //Using imported Routes
+
+
 app.use('/api/user', authRoute);
+
 app.use('/auth',passportAuth);
 
 app.get('/',function(req, res){

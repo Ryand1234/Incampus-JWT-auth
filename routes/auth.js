@@ -35,8 +35,40 @@ const posts = [
 ];
 
 
-
-
+/**
+ * @swagger
+ * /api/user/register:
+ *   post:
+ *     summary: Register User
+ *     description: Register Users into DB
+ *     tags:
+ *       - Authentication
+  *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                  type: string
+ *               password:
+ *                  type: string
+ *               name:
+ *                  type: string
+ *                 
+ *     responses:
+ *       200:
+ *         description: User Registered
+ *         schema:
+ *           type: object
+ *           properties:
+ *             username:
+ *                type: string
+ *             password:
+ *                type: string
+ *             name:
+ *                type: string
+ */
 router.post('/register', async(req, res) =>{
 
   //check if the username already exists
@@ -64,6 +96,36 @@ router.post('/register', async(req, res) =>{
 });
 
 
+/**
+ * @swagger
+ * /api/user/login:
+ *   post:
+ *     summary: Login
+ *     description: Login User
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                  type: string
+ *               password:
+ *                  type: string
+ * 
+ *                 
+ *     responses:
+ *       200:
+ *         description: User Registered
+ *         schema:
+ *           type: object
+ *           properties:
+ *             accessToken:
+ *               type: string
+ *               
+ */
 //LOGIN LOGIC
 router.post('/login', async(req, res) => {
   //check if the username does not exist
@@ -87,6 +149,25 @@ router.post('/login', async(req, res) => {
 });
 
 
+/**
+ * @swagger
+ * /api/user/logout:
+ *   delete:
+ *     summary: Logout
+ *     description: Logout User
+ *     tags:
+ *       - Authentication
+ *     components:
+ *      securitySchemes:
+ *        bearerAuth:            
+ *          type: http
+ *          scheme: bearer
+ *          bearerFormat: JWT                 
+ *     responses:
+ *       UnauthorizedError:
+ *          description: Access token is missing or invalid
+ *               
+ */
 //LOGOUT LOGIC
 router.delete('/logout', blacklistToken ,function(req, res){
   console.log('blacklisted');

@@ -12,6 +12,25 @@ const passport = require('passport');
 //     res.redirect('/');
 // });
 
+
+/**
+ * @swagger
+ * /auth/google:
+ *   get:
+ *     summary: Google Signin
+ *     description: Google Auth
+ *     tags:
+ *       - Social Authentication
+  *     requestBody:
+ *       content:
+ *         application/json:
+ *                 
+ *     responses:
+ *       200:
+ *         description: Successful
+ *         
+ *               
+ */
 // auth with google+
 router.get('/google', passport.authenticate('google', {
     scope: ['profile','email']
@@ -25,6 +44,26 @@ router.get('/google/callback', passport.authenticate("google", { failureRedirect
 
 });
 
+
+
+/**
+ * @swagger
+ * /auth/facebook:
+ *   get:
+ *     summary: Facebook Signin
+ *     description: Facebook Auth
+ *     tags:
+ *       - Social Authentication
+  *     requestBody:
+ *       content:
+ *         application/json:
+ *                 
+ *     responses:
+ *       200:
+ *         description: Successful
+ *         
+ *               
+ */
 //Auth with Facebook
 
 router.get('/facebook', passport.authenticate('facebook', {
