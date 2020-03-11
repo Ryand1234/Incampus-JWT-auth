@@ -1,3 +1,5 @@
+## Note: Connection to Mongo cluster is commented out. Use your own mongo cluster to save the user data.
+
 # WeConnect-JWT-auth
 
 ### EndPoints
