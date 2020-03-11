@@ -25,7 +25,8 @@ app.use('/api/user', authRoute);
 
 
 app.get('/',function(req, res){
-res.send('Hi');
+console.log('route / is accessed.');
+ res.send('Hi');
 });
 
 app.listen(3000 || process.env.PORT, function(){
