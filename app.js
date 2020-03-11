@@ -48,12 +48,12 @@ app.get('/docs', (req, res) => {
 app.use(passport.initialize());
 app.use(passport.session());
 //Mongoose connection to the cluster
-//mongoose.connect('mongodb://localhost:27017/jwt_auth', { useUnifiedTopology: true,useNewUrlParser: true  }, () => {
+// mongoose.connect('mongodb://localhost:27017/jwt_auth', { useUnifiedTopology: true,useNewUrlParser: true  }, () => {
 //  console.log('mongodb connected');
-//});
+// });
 
-mongoose.connect(keys.mongodb.dbURI, () => {
-  console.log('connected to mongodb');
+ mongoose.connect(keys.mongodb.dbURI, () => {
+   console.log('connected to mongodb');
 });
 
 // mongoose.connect("mongodb+srv://admin:admin@cluster0-nbxxl.mongodb.net/jwtauth?retryWrites=true&w=majority",{useNewUrlParser: true});
