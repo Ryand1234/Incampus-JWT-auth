@@ -13,7 +13,9 @@ const Joi = require('@hapi/joi');
 
 //Importing mongoose USER model
 const User = require('../models/User');
+const BlackList = require('../models/BlacklistToken');
 
+let blacklisted = [];
 
 //example database which is protected using jwtauth.
 //only a user's particular post will appear when we login.
@@ -85,10 +87,19 @@ router.post('/login', async(req, res) => {
 });
 
 
+//LOGOUT LOGIC
+router.delete('/logout', blacklistToken ,function(req, res){
+  console.log('blacklisted');
+  res.send("Token blacklisted");
+});
+
+
+//Displaying the protected posts. User can only see their own post. The posts array is defined above.
 router.get('/posts', authenticateToken, function(req, res){
   res.json(posts.filter(post => post.username === req.user.name));
-  // res.json(req.user.name)
 });
+
+
 
 
 //MIDDLEWARE TO AUTHENTICTAE TOKEN BEFORE ACCESSING PROTECTED ROUTES
@@ -99,6 +110,11 @@ function authenticateToken(req, res, next){
   if(token==null)
    return res.sendStatus(401);
 
+   blacklisted.forEach(function(expiredToken){
+     if(token===expiredToken)
+      res.status(400).send("This token has expired because the user of this token logged out. Login again to create a new token.");
+   });
+
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if(err)
     return res.sendStatus(403);
@@ -107,5 +123,21 @@ function authenticateToken(req, res, next){
   });
 }
 
+//MIDDLEWARE TO BLACKLIST TOKEN ON LOGOUT.
+function blacklistToken(req, res, next){
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if(token==null)
+   return res.sendStatus(401);
+   console.log(token);
+   blacklisted.push(token);
+   next();
+}
+
 
 module.exports = router;
+
+
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQW5nZWxhIiwiaWF0IjoxNTgzOTE4NzAyfQ.PvEMICT_v33INbUapy8jUmi40RkvllGj2NrGHe8JWco
