@@ -45,3 +45,13 @@ GET
 Endpoint: https://incampusbackend.herokuapp.com/api/user/posts
 
 To check the working of this JWT auth, a "posts" array has been created. The user which logs in will only see their post as a JSON reply. 
+
+#### 5.Google
+/auth/google
+
+Call this link using front end for google Authentication
+
+#### 6.Facebook
+/auth/facebook
+
+call this link using front end for Facebook Authentication
