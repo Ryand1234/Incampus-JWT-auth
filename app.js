@@ -13,9 +13,7 @@ app.use(bodyParser.json());
 //mongoose.connect('mongodb://localhost:27017/jwt_auth', { useUnifiedTopology: true,useNewUrlParser: true  }, () => {
 //  console.log('mongodb connected');
 //});
-
-mongoose.connect("mongodb+srv://admin:admin@cluster0-nbxxl.mongodb.net/jwtauth", { useUnifiedTopology: true,useNewUrlParser: true  }, () => {
- console.log('mongodb connected');
+mongoose.connect("mongodb+srv://rajat-admin:rajat1999@cluster0-nbxxl.mongodb.net/jwtauth",{useNewUrlParser: true});
 
 //Importing Routes
 const authRoute = require('./routes/auth.js');
