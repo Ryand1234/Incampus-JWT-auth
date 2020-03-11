@@ -46,11 +46,11 @@ app.use(passport.session());
 //  console.log('mongodb connected');
 // });
 
-// mongoose.connect(keys.mongodb.dbURI, () => {
-//   console.log('connected to mongodb');
-// });
+ mongoose.connect(keys.mongodb.dbURI, () => {
+   console.log('connected to mongodb');
+});
 
-mongoose.connect("mongodb+srv://admin:admin@cluster0-nbxxl.mongodb.net/jwtauth?retryWrites=true&w=majority",{useNewUrlParser: true});
+// mongoose.connect("mongodb+srv://admin:admin@cluster0-nbxxl.mongodb.net/jwtauth?retryWrites=true&w=majority",{useNewUrlParser: true});
 
 //Importing Routes
 const authRoute = require('./routes/auth.js');
