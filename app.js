@@ -14,8 +14,8 @@ app.use(bodyParser.json());
 //  console.log('mongodb connected');
 //});
 
-mongoose.connect("mongodb+srv://admin:admin@cluster0-nbxxl.mongodb.net/jwtauth", { useUnifiedTopology: true,useNewUrlParser: true  }, () => {
- console.log('mongodb connected');
+//mongoose.connect("mongodb+srv://admin:admin@cluster0-nbxxl.mongodb.net/jwtauth", { useUnifiedTopology: true,useNewUrlParser: true  }, () => {
+ //console.log('mongodb connected');
 
 //Importing Routes
 const authRoute = require('./routes/auth.js');
