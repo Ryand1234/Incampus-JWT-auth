@@ -15,6 +15,11 @@ const Joi = require('@hapi/joi');
 const User = require('../models/User');
 const Blacklist = require('../models/BlacklistToken');
 
+//Initializing twilio library and API keys
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require('twilio')(accountSid, authToken);
+
 let blacklisted = [];
 
 //example database which is protected using jwtauth.
@@ -55,7 +60,7 @@ const posts = [
  *                  type: string
  *               name:
  *                  type: string
- *                 
+ *
  *     responses:
  *       200:
  *         description: User Registered
@@ -74,27 +79,48 @@ router.post('/register', async(req, res) =>{
   //check if the username already exists
   const userexists = await User.findOne({username:req.body.username});
   if(userexists)
-    res.status(400).send('Username already exists');
+    return res.status(400).send('Username already exists');
 
   //Hash password
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
 
+  //Generating a 6 digit random OTP
+  const randomotp = Math.floor((Math.random() * 899999) + 100000);
+
   //Create a new user and save it in DB
   const newuser = new User({
     username: req.body.username,
     password:hashedPassword,
     email:req.body.email,
-    name:req.body.name
+    name:req.body.name,
+    phone:req.body.phone,
+    otp:randomotp
   });
+
+  //Sending OTP mobile verification message with twilio
+  const msgbody = 'Your OTP for incampus is ' + randomotp;
+  client.messages
+    .create({
+       body: msgbody,
+       from: '+14079016056',
+       to: '+919560257177'
+     })
+    .then(message => console.log(message.sid));
+
+
   try{
     const saveduser = await newuser.save();
-    res.status(200).send(saveduser);
+    return res.status(200).send(saveduser);
   }catch(err){
-    res.status(400).send(err);
+
+    return res.status(400).send(err);
     console.log(err);
   }
+
+
+
 });
 
 
@@ -116,8 +142,8 @@ router.post('/register', async(req, res) =>{
  *                  type: string
  *               password:
  *                  type: string
- * 
- *                 
+ *
+ *
  *     responses:
  *       200:
  *         description: User Registered
@@ -126,7 +152,7 @@ router.post('/register', async(req, res) =>{
  *           properties:
  *             accessToken:
  *               type: string
- *               
+ *
  */
 //LOGIN LOGIC
 router.post('/login', async(req, res) => {
@@ -161,14 +187,14 @@ router.post('/login', async(req, res) => {
  *       - Authentication
  *     components:
  *      securitySchemes:
- *        bearerAuth:            
+ *        bearerAuth:
  *          type: http
  *          scheme: bearer
- *          bearerFormat: JWT                 
+ *          bearerFormat: JWT
  *     responses:
  *       UnauthorizedError:
  *          description: Access token is missing or invalid
- *               
+ *
  */
 //LOGOUT LOGIC
 router.delete('/logout', blacklistToken ,function(req, res){
