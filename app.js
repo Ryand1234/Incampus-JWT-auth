@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const passportAuth = require('./routes/passport-auth-routes');
+
 const passportSetup = require('./config/passport-setup');
 const keys = require('./config/keys');
 var path = require('path');
@@ -47,26 +47,32 @@ app.get('/docs', (req, res) => {
 
 app.use(passport.initialize());
 app.use(passport.session());
-//Mongoose connection to the cluster
-// mongoose.connect('mongodb://localhost:27017/jwt_auth', { useUnifiedTopology: true,useNewUrlParser: true  }, () => {
-//  console.log('mongodb connected');
-// });
 
- mongoose.connect(keys.mongodb.dbURI, () => {
-   console.log('connected to mongodb');
+//==================================================================================================================================
+
+//Mongoose connection to the cluster
+mongoose.connect('mongodb://localhost:27017/jwt_auth', { useUnifiedTopology: true,useNewUrlParser: true  }, () => {
+ console.log('mongodb connected');
 });
+
+//  mongoose.connect(keys.mongodb.dbURI, () => {
+//    console.log('connected to mongodb');
+// });
 
 // mongoose.connect("mongodb+srv://admin:admin@cluster0-nbxxl.mongodb.net/jwtauth?retryWrites=true&w=majority",{useNewUrlParser: true});
 
+//==================================================================================================================================
+
 //Importing Routes
 const authRoute = require('./routes/auth.js');
-
+const passportAuth = require('./routes/passport-auth-routes');
+const otpRoute = require('./routes/OTP.js');
 //Using imported Routes
-
-
 app.use('/api/user', authRoute);
-
+app.use('/otp', otpRoute);
 app.use('/auth',passportAuth);
+
+//==================================================================================================================================
 
 app.get('/',function(req, res){
 console.log('route / is accessed.');

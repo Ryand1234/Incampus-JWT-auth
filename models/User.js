@@ -29,6 +29,12 @@ const userSchema = new mongoose.Schema({
     socialId:String,
     token: String,
     provider: String
+  },
+  phone:{
+    type:String
+  },
+  otp:{
+    type:Number
   }
 });
 
