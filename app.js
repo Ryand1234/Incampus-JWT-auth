@@ -79,6 +79,10 @@ console.log('route / is accessed.');
  res.send('Hi');
 });
 
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+
 app.listen(process.env.PORT || 4500, function(){
   console.log('Server is running on port 4500');
 });

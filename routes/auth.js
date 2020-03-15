@@ -1,4 +1,7 @@
 const router = require("express").Router();
+const {check} = require('express-validator');
+const Password = require('../controllers/password');
+const validate = require('../middlewares/validate');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -202,12 +205,22 @@ router.delete('/logout', blacklistToken ,function(req, res){
   res.send("Token blacklisted");
 });
 
-
 //Displaying the protected posts. User can only see their own post. The posts array is defined above.
 router.get('/posts', authenticateToken, function(req, res){
   res.json(posts.filter(post => post.username === req.user.name));
 });
 
+//Password RESET
+router.post('/recover', [
+  check('email').isEmail().withMessage('Enter a valid email address'),
+], validate, Password.recover);
+
+router.get('/reset/:token', Password.reset);
+
+router.post('/reset/:token', [
+  check('password').not().isEmpty().isLength({min: 6}).withMessage('Must be at least 6 chars long'),
+  check('confirmPassword', 'Passwords do not match').custom((value, {req}) => (value === req.body.password)),
+], validate, Password.resetPassword);
 
 
 
