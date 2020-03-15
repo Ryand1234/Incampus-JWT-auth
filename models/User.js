@@ -14,10 +14,33 @@ const userSchema = new mongoose.Schema({
     type : String,
     required: true
   },
-  name:{
-    type:String,
-    required:true
-  },
+  name: {
+    fname:{
+      type : String
+      },
+    lname:{
+      type : String
+      }
+    },
+  dob: {
+    type: String
+    },
+  university:{
+    type : String
+    },
+  organisation:{
+    type : String
+    },
+  course: {
+    type : String
+    },
+  image: {
+    data: Buffer,
+    contentType: String
+    },
+  gender:{
+    type : String
+    },
   isSocial:{
     type:Boolean,
     default:false
