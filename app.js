@@ -67,10 +67,12 @@ mongoose.connect('mongodb://localhost:27017/jwt_auth', { useUnifiedTopology: tru
 const authRoute = require('./routes/auth.js');
 const passportAuth = require('./routes/passport-auth-routes');
 const otpRoute = require('./routes/OTP.js');
+const userInfo = require('./routes/userinfo.js')
 //Using imported Routes
 app.use('/api/user', authRoute);
 app.use('/otp', otpRoute);
 app.use('/auth',passportAuth);
+app.use('/info/',userInfo);
 
 //==================================================================================================================================
 
