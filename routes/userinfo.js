@@ -1,6 +1,6 @@
 var express = require('express');
 const { check, validationResult } = require('express-validator');
-const User = require('../config/schema')
+const User = require('../models/User')
 const fs = require('fs')
 var router = express.Router();
 const Blacklist = require('../models/BlacklistToken');
