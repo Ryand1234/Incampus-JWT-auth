@@ -158,7 +158,7 @@ router.post('/register', async(req, res) =>{
  *
  */
 //LOGIN LOGIC
-router.post('/login', async(req, res) => {
+router.post('/login', async (req, res) => {
   //check if the username does not exist
   const userexists = await User.findOne({username:req.body.username});
   if(!userexists)
