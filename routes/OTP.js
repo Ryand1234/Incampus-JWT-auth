@@ -38,7 +38,38 @@ const client = require('twilio')(accountSid, authToken);
 //   res.send('otp message sent');
 // });
 
-
+/**
+ * @swagger
+ * /otp/loginotp:
+ *   post:
+ *     summary: Generate OTP for Registration
+ *     description: Otp generation
+ *     tags:
+ *       - OTP
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               phone_number:
+ *                  type: string
+ *               sms:
+ *                  type: string
+ *               
+ *
+ *     responses:
+ *       200:
+ *         description: OTP sent
+ *         schema:
+ *           type: object
+ *           properties:
+ *             Status:
+ *                type: string
+ *             Details:
+ *                type: string
+ *             
+ */
 router.post('/loginotp', async (req, res) => {
     let { phone_number, sms } = req.body
     try {

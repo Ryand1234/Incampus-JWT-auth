@@ -33,7 +33,7 @@ const swaggerDefinition = {
 const options = {
   swaggerDefinition,
   // apis: [path.resolve(__dirname, 'app.js')],
-  apis: ['./routes/auth.js', './routes/passport-auth-routes.js']
+  apis: ['./routes/auth.js', './routes/passport-auth-routes.js','./routes/OTP.js']
 };
 const swaggerSpec = swaggerJSDoc(options);
 app.get('/swagger.json', (req, res) => {
