@@ -2,12 +2,16 @@ const router = require("express").Router();
 require('dotenv').config();
 const User = require('../models/User');
 require('dotenv').config();
+
+const request = require('request')
+const FormData = require('form-data');
 // Download the helper library from https://www.twilio.com/docs/node/install
 // Your Account Sid and Auth Token from twilio.com/console
 // DANGER! This is insecure. See http://twil.io/secure
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
+
 
 
 // router.post('/', function(req, res){
@@ -36,25 +40,31 @@ const client = require('twilio')(accountSid, authToken);
 
 
 router.post('/loginotp', async (req, res) => {
-  let { phone_number, sms } = req.body
-  try {
-      var url = `http://2factor.in/API/V1/15755230-3545-11ea-9fa5-0200cd936042/ADDON_SERVICES/SEND/PSMS`
-      //console.log(url)
-      var form = {
-          From: "InCampus",
-          To: phone_number,
-          Msg: sms
-      }
-      request.post({ url, form: form }, function (err, res, body) {
-          body = JSON.parse(body)
-          if (err)
-              return res.json(err)
-          res.json(body)
-      })
-  }
-  catch (err) {
-      return res.json(err.message)
-  }
+    let { phone_number, sms } = req.body
+    try {
+        var url = `https://2factor.in/API/V1/81284ac9-a3a6-11e9-ade6-0200cd936042/ADDON_SERVICES/SEND/PSMS`
+        //console.log(url)
+        var form = {
+            From: "InCampus",
+            To: phone_number,
+            Msg: sms
+        }
+        request.post({ url, form: form }, function (err, response, body) {
+            try {
+                body = JSON.parse(body)
+                if (err)
+                    res.send(err)
+                res.send(body)
+            } catch (err) {
+                console.log(err);
+                res.send(err);
+            }
+            
+        })
+    }
+    catch (err) {
+        return res.json(err.message)
+    }
 })
 
 // router.post('/verify', function (req, res) {
