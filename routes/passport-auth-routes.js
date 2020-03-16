@@ -33,7 +33,7 @@ const passport = require('passport');
  */
 // auth with google+
 router.get('/google', passport.authenticate('google', {
-    scope: ['profile','email']
+    scope: ['profile', 'email']
 }));
 
 // hand control to passport to use code to grab profile info
@@ -67,16 +67,16 @@ router.get('/google/callback', passport.authenticate("google", { failureRedirect
 //Auth with Facebook
 
 router.get('/facebook', passport.authenticate('facebook', {
-    scope: ["email",  "user_location", "user_hometown", "user_birthday"]
+    scope: ["email", "user_location", "user_hometown", "user_birthday"]
 }));
 
 
 router.get('/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/' , session: false}),(req, res) => {
-    var token = req.user.token;
-    console.log(token)
-    res.redirect("http://localhost:3000?token=" + token);
+    passport.authenticate('facebook', { failureRedirect: '/', session: false }), (req, res) => {
+        var token = req.user.token;
+        console.log(token)
+        res.redirect("http://localhost:3000?token=" + token);
 
-});
+    });
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const {check} = require('express-validator');
+const { check } = require('express-validator');
 const Password = require('../controllers/password');
 const validate = require('../middlewares/validate');
 const bcrypt = require("bcryptjs");
@@ -30,15 +30,15 @@ let blacklisted = [];
 const posts = [
   {
     username: "Dwight",
-    content:"Assistant to the Regional Manager"
+    content: "Assistant to the Regional Manager"
   },
   {
     username: "Jim",
-    content:"J Crew model salesman"
+    content: "J Crew model salesman"
   },
   {
-    username:"Angela",
-    content:"I am all about cats"
+    username: "Angela",
+    content: "I am all about cats"
   }
 ];
 
@@ -77,11 +77,11 @@ const posts = [
  *             name:
  *                type: string
  */
-router.post('/register', async(req, res) =>{
+router.post('/register', async (req, res) => {
 
   //check if the username already exists
-  const userexists = await User.findOne({username:req.body.username});
-  if(userexists)
+  const userexists = await User.findOne({ username: req.body.username });
+  if (userexists)
     return res.status(400).send('Username already exists');
 
   //Hash password
@@ -95,28 +95,28 @@ router.post('/register', async(req, res) =>{
   //Create a new user and save it in DB
   const newuser = new User({
     username: req.body.username,
-    password:hashedPassword,
-    email:req.body.email,
-    name:req.body.name,
-    phone:req.body.phone,
-    otp:randomotp
+    password: hashedPassword,
+    email: req.body.email,
+    name: req.body.name,
+    phone: req.body.phone,
+    otp: randomotp
   });
 
   //Sending OTP mobile verification message with twilio
   const msgbody = 'Your OTP for incampus is ' + randomotp;
   client.messages
     .create({
-       body: msgbody,
-       from: '+14079016056',
-       to: '+919560257177'
-     })
+      body: msgbody,
+      from: '+14079016056',
+      to: '+919560257177'
+    })
     .then(message => console.log(message.sid));
 
 
-  try{
+  try {
     const saveduser = await newuser.save();
     return res.status(200).send(saveduser);
-  }catch(err){
+  } catch (err) {
 
     return res.status(400).send(err);
     console.log(err);
@@ -160,23 +160,23 @@ router.post('/register', async(req, res) =>{
 //LOGIN LOGIC
 router.post('/login', async (req, res) => {
   //check if the username does not exist
-  const userexists = await User.findOne({username:req.body.username});
-  if(!userexists)
+  const userexists = await User.findOne({ username: req.body.username });
+  if (!userexists)
     res.status(400).send('Username or password is wrong');
 
   //check password
   const validPass = await bcrypt.compare(req.body.password, userexists.password);
-  if(!validPass)
+  if (!validPass)
     res.status(400).send('Password is incorrect');
 
   const username = req.body.username;
   // console.log(req.body.username);
-  const user = {name : username};
+  const user = { name: username };
   // console.log(user);
   const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
 
-  res.json({accessToken :  accessToken});
-// res.send('Logged In');
+  res.json({ accessToken: accessToken });
+  // res.send('Logged In');
 });
 
 
@@ -200,13 +200,13 @@ router.post('/login', async (req, res) => {
  *
  */
 //LOGOUT LOGIC
-router.delete('/logout', blacklistToken ,function(req, res){
+router.delete('/logout', blacklistToken, function (req, res) {
   console.log('blacklisted');
   res.send("Token blacklisted");
 });
 
 //Displaying the protected posts. User can only see their own post. The posts array is defined above.
-router.get('/posts', authenticateToken, function(req, res){
+router.get('/posts', authenticateToken, function (req, res) {
   res.json(posts.filter(post => post.username === req.user.name));
 });
 
@@ -218,57 +218,57 @@ router.post('/recover', [
 router.get('/reset/:token', Password.reset);
 
 router.post('/reset/:token', [
-  check('password').not().isEmpty().isLength({min: 6}).withMessage('Must be at least 6 chars long'),
-  check('confirmPassword', 'Passwords do not match').custom((value, {req}) => (value === req.body.password)),
+  check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'),
+  check('confirmPassword', 'Passwords do not match').custom((value, { req }) => (value === req.body.password)),
 ], validate, Password.resetPassword);
 
 
 
 //MIDDLEWARE TO AUTHENTICTAE TOKEN BEFORE ACCESSING PROTECTED ROUTES
-function authenticateToken(req, res, next){
+function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if(token==null)
-   return res.sendStatus(401);
+  if (token == null)
+    return res.sendStatus(401);
 
-   // blacklisted.forEach(function(expiredToken){
-   //   if(token===expiredToken)
-   //    res.status(400).send("This token has expired because the user of this token logged out. Login again to create a new token.");
-   // });
+  // blacklisted.forEach(function(expiredToken){
+  //   if(token===expiredToken)
+  //    res.status(400).send("This token has expired because the user of this token logged out. Login again to create a new token.");
+  // });
 
-   Blacklist.findOne({token:token}, function(err, found){
-      if(found)
-     return res.json('Token blacklisted. Cannot use this token.');
-     else{
-       jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-         if(err)
-         return res.sendStatus(403);
-         req.user = user;
-         next();
-       });
-     }
-   });
+  Blacklist.findOne({ token: token }, function (err, found) {
+    if (found)
+      return res.json('Token blacklisted. Cannot use this token.');
+    else {
+      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err)
+          return res.sendStatus(403);
+        req.user = user;
+        next();
+      });
+    }
+  });
 
 
 }
 
 //MIDDLEWARE TO BLACKLIST TOKEN ON LOGOUT.
-function blacklistToken(req, res, next){
+function blacklistToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if(token==null)
-   return res.sendStatus(401);
-   console.log(token);
-   blacklisted.push(token);
+  if (token == null)
+    return res.sendStatus(401);
+  console.log(token);
+  blacklisted.push(token);
 
-   const newtoken = new Blacklist({
-     token:token
-   });
-   newtoken.save();
+  const newtoken = new Blacklist({
+    token: token
+  });
+  newtoken.save();
 
-   next();
+  next();
 }
 
 

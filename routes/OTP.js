@@ -34,21 +34,44 @@ const client = require('twilio')(accountSid, authToken);
 //   res.send('otp message sent');
 // });
 
-router.post('/verify', function(req, res){
-  const phone = req.body.phone;
-  const otp = req.body.otp;
-  User.findOne({phone:phone}, function(err, found){
-    if(!found){
-      console.log('No account with this number exists.');
-      res.status(404).send('No account with this number exists.');
-    }else{
-      if(otp === found.otp){
-        res.status(200).send('Successfully verified');
-      }else{
-        res.status(401).send('Wrong OTP entered');
+
+router.post('/loginotp', async (req, res) => {
+  let { phone_number, sms } = req.body
+  try {
+      var url = `http://2factor.in/API/V1/15755230-3545-11ea-9fa5-0200cd936042/ADDON_SERVICES/SEND/PSMS`
+      //console.log(url)
+      var form = {
+          From: "Farmersapp",
+          To: phone_number,
+          Msg: sms
       }
-    }
-  });
-});
+      request.post({ url, form: form }, function (err, res, body) {
+          body = JSON.parse(body)
+          if (err)
+              return res.json(err)
+          res.json(body)
+      })
+  }
+  catch (err) {
+      return res.json(err.message)
+  }
+})
+
+// router.post('/verify', function (req, res) {
+//   const phone = req.body.phone;
+//   const otp = req.body.otp;
+//   User.findOne({ phone: phone }, function (err, found) {
+//     if (!found) {
+//       console.log('No account with this number exists.');
+//       res.status(404).send('No account with this number exists.');
+//     } else {
+//       if (otp === found.otp) {
+//         res.status(200).send('Successfully verified');
+//       } else {
+//         res.status(401).send('Wrong OTP entered');
+//       }
+//     }
+//   });
+// });
 
 module.exports = router;

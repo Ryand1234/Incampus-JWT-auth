@@ -25,10 +25,10 @@ passport.use(
         console.log('1. passport callback function fired:');
         console.log(profile);
         // User.findOne({'social.socialId': profile.id,'social.provider':'Google'},function(err,obj){ console.log(obj);});
-        User.findOne({email:profile.emails[0].value}).then((currentUser) => {
+        User.findOne({ email: profile.emails[0].value }).then((currentUser) => {
             console.log('2. passport callback function fired:');
             console.log(profile);
-            if(currentUser){
+            if (currentUser) {
                 // already have this user
                 console.log('user is: ', currentUser);
                 // do something
@@ -38,16 +38,16 @@ passport.use(
                 console.log('3. passport callback function fired:');
                 console.log(profile);
                 new User({
-                    
-                    email : profile.emails[0].value,
+
+                    email: profile.emails[0].value,
                     name: profile.displayName,
                     username: profile.displayName,
-                    isSocial:true,
+                    isSocial: true,
                     profilePicture: profile._json.picture,
-                    social:{
+                    social: {
                         token: accessToken,
                         socialId: profile.id,
-                        provider:'Google'
+                        provider: 'Google'
                     }
                 }).save().then((newUser) => {
                     console.log('created new user: ', newUser);
@@ -66,45 +66,45 @@ passport.use(new FacebookStrategy({
     clientSecret: keys.facebook.clientSecret,
     callbackURL: '/auth/facebook/callback',
     profileFields: ['id', 'displayName', 'picture.type(large)', 'email', 'birthday', 'friends', 'first_name', 'last_name', 'middle_name', 'gender', 'link']
-  },
-  function(accessToken, refreshToken, profile, done) {
-    const picture = `https://graph.facebook.com/${profile.id}/picture?width=200&height=200&access_token=${accessToken}`
-    console.log('1. passport callback function fired:');
-    console.log(picture);
-    console.log(profile)
-    User.findOne({email:profile.emails[0].value}).then((currentUser) => {
-        console.log('2. passport callback function fired:');
-        console.log(profile);
-        if(currentUser){
-            // already have this user
-            console.log('user is: ', currentUser);
-            // do something
-            done(null, currentUser);
-        } else {
-            // if not, create user in our db
-            console.log('3. passport callback function fired:');
+},
+    function (accessToken, refreshToken, profile, done) {
+        const picture = `https://graph.facebook.com/${profile.id}/picture?width=200&height=200&access_token=${accessToken}`
+        console.log('1. passport callback function fired:');
+        console.log(picture);
+        console.log(profile)
+        User.findOne({ email: profile.emails[0].value }).then((currentUser) => {
+            console.log('2. passport callback function fired:');
             console.log(profile);
-            new User({
-            
-                email : profile.emails[0].value,
-                name: profile.displayName,
-                username: profile.displayName,
-                isSocial:true,
-                profilePicture: picture,
-                social:{
-                    token: accessToken,
-                    socialId: profile.id,
-                    provider:'Facebook'
-
-                }
-            }).save().then((newUser) => {
-                console.log('created new user: ', newUser);
+            if (currentUser) {
+                // already have this user
+                console.log('user is: ', currentUser);
                 // do something
-                done(null, newUser);
-            });
-            console.log('4. passport callback function fired:');
-            console.log(profile);
-        }
-    });
-  }
+                done(null, currentUser);
+            } else {
+                // if not, create user in our db
+                console.log('3. passport callback function fired:');
+                console.log(profile);
+                new User({
+
+                    email: profile.emails[0].value,
+                    name: profile.displayName,
+                    username: profile.displayName,
+                    isSocial: true,
+                    profilePicture: picture,
+                    social: {
+                        token: accessToken,
+                        socialId: profile.id,
+                        provider: 'Facebook'
+
+                    }
+                }).save().then((newUser) => {
+                    console.log('created new user: ', newUser);
+                    // do something
+                    done(null, newUser);
+                });
+                console.log('4. passport callback function fired:');
+                console.log(profile);
+            }
+        });
+    }
 ));

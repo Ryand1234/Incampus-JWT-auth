@@ -10,7 +10,7 @@ const passportSetup = require('./config/passport-setup');
 const keys = require('./config/keys');
 var path = require('path');
 // Getting data in json format
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 //Documentation
@@ -33,7 +33,7 @@ const swaggerDefinition = {
 const options = {
   swaggerDefinition,
   // apis: [path.resolve(__dirname, 'app.js')],
-  apis : ['./routes/auth.js','./routes/passport-auth-routes.js']
+  apis: ['./routes/auth.js', './routes/passport-auth-routes.js']
 };
 const swaggerSpec = swaggerJSDoc(options);
 app.get('/swagger.json', (req, res) => {
@@ -51,8 +51,8 @@ app.use(passport.session());
 //==================================================================================================================================
 
 //Mongoose connection to the cluster
-mongoose.connect('mongodb://localhost:27017/jwt_auth', { useUnifiedTopology: true,useNewUrlParser: true  }, () => {
- console.log('mongodb connected');
+mongoose.connect('mongodb://localhost:27017/jwt_auth', { useUnifiedTopology: true, useNewUrlParser: true }, () => {
+  console.log('mongodb connected');
 });
 
 //  mongoose.connect(keys.mongodb.dbURI, () => {
@@ -71,21 +71,21 @@ const userInfo = require('./routes/userinfo.js')
 //Using imported Routes
 app.use('/api/user', authRoute);
 app.use('/otp', otpRoute);
-app.use('/auth',passportAuth);
-app.use('/info/',userInfo);
+app.use('/auth', passportAuth);
+app.use('/info/', userInfo);
 
 //==================================================================================================================================
 
-app.get('/',function(req, res){
-console.log('route / is accessed.');
- res.send('Hi');
+app.get('/', function (req, res) {
+  console.log('route / is accessed.');
+  res.send('Hi');
 });
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 
-app.listen(process.env.PORT || 4500, function(){
+app.listen(process.env.PORT || 4500, function () {
   console.log('Server is running on port 4500');
 });
 
