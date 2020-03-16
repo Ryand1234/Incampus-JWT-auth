@@ -41,7 +41,7 @@ router.post('/loginotp', async (req, res) => {
       var url = `http://2factor.in/API/V1/15755230-3545-11ea-9fa5-0200cd936042/ADDON_SERVICES/SEND/PSMS`
       //console.log(url)
       var form = {
-          From: "Farmersapp",
+          From: "InCampus",
           To: phone_number,
           Msg: sms
       }
