@@ -38,28 +38,33 @@ const client = require('twilio')(accountSid, authToken);
 //   res.send('otp message sent');
 // });
 
-
+// Sends Back Session ID And sends the otp to the phone number
 router.post('/loginotp', async (req, res) => {
-    let { phone_number, sms } = req.body
+    let { phone_number } = req.body
     try {
-        var url = `https://2factor.in/API/V1/81284ac9-a3a6-11e9-ade6-0200cd936042/ADDON_SERVICES/SEND/PSMS`
-        //console.log(url)
-        var form = {
-            From: "InCampus",
-            To: phone_number,
-            Msg: sms
-        }
-        request.post({ url, form: form }, function (err, response, body) {
-            try {
-                body = JSON.parse(body)
-                if (err)
-                    res.send(err)
-                res.send(body)
-            } catch (err) {
-                console.log(err);
-                res.send(err);
-            }
-            
+        var url = `https://2factor.in/API/V1/${api_key}/SMS/${phone_number}/AUTOGEN`
+        request.get(url, function (err, response, body) {
+            body = JSON.parse(body)
+            if (err)
+                return res.json(err)
+            return res.json(body.Details)
+        })
+    }
+    catch (err) {
+        return res.json(err.message)
+    }
+})
+
+// Verify Session Id and OTP 
+router.post('/verifyotp', async (req, res) => {
+    let { otp, session_id } = req.body;
+    try {
+        var url = `https://2factor.in/API/V1/${api_key}/SMS/VERIFY/${session_id}/${otp}`
+        request.get(url, function (err, response, body) {
+            body = JSON.parse(body)
+            if (err)
+                return res.json(err)
+            return res.json(body.Details)
         })
     }
     catch (err) {
