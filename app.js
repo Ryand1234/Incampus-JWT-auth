@@ -72,7 +72,7 @@ const fileupload = require('./routes/fileupload')
 app.use('/api/user', authRoute);
 app.use('/', otpRoute);
 app.use('/auth', passportAuth);
-app.use('/info/', userInfo);
+app.use('/info', userInfo);
 app.use('/fileUpload', fileupload);
 
 //==================================================================================================================================

@@ -16,6 +16,12 @@ const userSchema = new mongoose.Schema({
     type:String,
     required:true
     },
+  profession:{
+    type:String
+  },
+  education:{
+    type:String
+  },
   dob: {
     type: String
     },
