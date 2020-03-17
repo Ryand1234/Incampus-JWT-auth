@@ -53,10 +53,7 @@ const client = require('twilio')(accountSid, authToken);
  *             type: object
  *             properties:
  *               phone_number:
- *                  type: string
- *               sms:
- *                  type: string
- *               
+ *                  type: string               
  *
  *     responses:
  *       200:
