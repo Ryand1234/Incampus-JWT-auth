@@ -1,26 +1,20 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-
   username:{
     type:String,
-    required: true
+    required:true
   },
   password:{
     type:String,
     required:true
   },
   email: {
-    type : String,
-    required: true
+    type : String
   },
   name: {
-    fname:{
-      type : String
-      },
-    lname:{
-      type : String
-      }
+    type:String,
+    required:true
     },
   dob: {
     type: String
@@ -58,6 +52,9 @@ const userSchema = new mongoose.Schema({
   },
   otp:{
     type:Number
+  },
+  otpverified:{
+    type:Boolean
   },
   resetPasswordToken: {
     type: String,
