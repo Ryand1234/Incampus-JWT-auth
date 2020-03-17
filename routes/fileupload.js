@@ -21,6 +21,36 @@ const IAM_USER_KEY = 'config.accessKeyId';
 const IAM_USER_SECRET = 'config.secretAccessKey';
 
 router.use(cors());
+
+/**
+ * @swagger
+ * /fileupload/upload:
+ *   post:
+ *     summary: Upload files to s3 Bucket
+ *     description: file Upload
+ *     tags:
+ *       - File upload
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                  type: file               
+ *
+ *     responses:
+ *       200:
+ *         description: File Uploaded
+ *         schema:
+ *           type: object
+ *           properties:
+ *             Status:
+ *                type: string
+ *             Details:
+ *                type: string
+ *             
+ */
 router.post('/upload', multipleUpload, function (req, res) {
     const file = req.files;
 
