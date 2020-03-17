@@ -68,11 +68,13 @@ const authRoute = require('./routes/auth.js');
 const passportAuth = require('./routes/passport-auth-routes');
 const otpRoute = require('./routes/OTP.js');
 const userInfo = require('./routes/userinfo.js')
+const fileupload = require('./routes/fileupload')
 //Using imported Routes
 app.use('/api/user', authRoute);
 app.use('/otp', otpRoute);
 app.use('/auth', passportAuth);
 app.use('/info/', userInfo);
+app.use('/fileUpload', fileupload);
 
 //==================================================================================================================================
 
