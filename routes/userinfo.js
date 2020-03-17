@@ -43,10 +43,11 @@ router.post('/userinfo',
 					}
 				});
 
+				res.send('User info saved');
 						
 		
 		}
-		res.send('User info saved');
+		
 
 	});
 
@@ -61,11 +62,12 @@ router.post('/image', authenticateToken, async (req, res, next) => {
 					existingUser.image.data = fs.readFileSync(req.body.image.path);
 					existingUser.image.contentType = 'image/png';
 					existingUser.save();
+					res.send('Image Saved');
 				}
  			});
 	
 
-	res.send('Image Saved');
+			
 
 });
 
